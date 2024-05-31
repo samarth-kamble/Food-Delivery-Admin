@@ -1,6 +1,7 @@
 "use client";
 
 import Heading from "@/components/Heading";
+import { AlertModal } from "@/components/modal/alert-modal";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -34,7 +35,7 @@ const formSchema = z.object({
 
 const SettingsForm = ({ initialData }: SettingsFormProps) => {
   const { toast } = useToast();
-
+  const [open, setOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData,
@@ -65,11 +66,42 @@ const SettingsForm = ({ initialData }: SettingsFormProps) => {
       setIsLoading(false);
     }
   };
+
+  const onDelete = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.delete(`/api/stores/${parmas.storeId}`);
+      toast({
+        title: "Store Deleted",
+        description: "Your store has been deleted successfully",
+      });
+      router.push("/");
+    } catch (error) {
+      toast({
+        title: "Something went wrong!",
+        description: "An error occurred while deleting the store",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
+      <AlertModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        onConfirm={onDelete}
+        loading={isLoading}
+      />
       <div className="flex items-center  justify-center">
         <Heading title="Settings" description="Manage Store Settings" />
-        <Button variant={"destructive"} size={"icon"} onClick={() => {}}>
+        <Button
+          variant={"destructive"}
+          size={"icon"}
+          onClick={() => setOpen(true)}
+        >
           <Trash className="h-4 w-4" />
         </Button>
       </div>

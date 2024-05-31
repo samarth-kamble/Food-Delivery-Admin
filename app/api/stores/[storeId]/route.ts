@@ -1,15 +1,7 @@
 import { db } from "@/lib/firebase";
 import { Store } from "@/types-db";
 import { auth } from "@clerk/nextjs/server";
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  serverTimestamp,
-  updateDoc,
-} from "firebase/firestore";
+import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { NextResponse } from "next/server";
 
 export const PATCH = async (
@@ -36,6 +28,7 @@ export const PATCH = async (
     }
 
     const docRef = doc(db, "stores", params.storeId);
+
     await updateDoc(docRef, { name });
 
     const store = (await getDoc(docRef)).data() as Store;
@@ -58,12 +51,13 @@ export const DELETE = async (
     }
 
     if (!params.storeId) {
-      return new NextResponse("Store ID is required", { status: 400 });
+      return new NextResponse("Store ID is missing", { status: 400 });
     }
 
     // TODO: Delete all the sub collection and along with those data file
 
     const docRef = doc(db, "stores", params.storeId);
+
     await deleteDoc(docRef);
 
     return NextResponse.json({ message: "Store deleted successfully" });
