@@ -7,3 +7,11 @@ export interface Store {
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
+
+export interface Billboards {
+  id: string;
+  label: string;
+  imageUrl: string;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
