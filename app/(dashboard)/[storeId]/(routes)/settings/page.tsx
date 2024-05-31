@@ -4,6 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { doc, getDoc } from "firebase/firestore";
 import { redirect } from "next/navigation";
 import React from "react";
+import SettingsForm from "./_components/settings-form";
 interface SettingsPageProps {
   params: {
     storeId: string;
@@ -24,7 +25,9 @@ const SettingsPage = async ({ params }: SettingsPageProps) => {
 
   return (
     <div className="flex-col">
-      <div className="flex-1 space-y-5 p-8 pt-6"></div>
+      <div className="flex-1 space-y-5 p-8 pt-6">
+        <SettingsForm initialData={store} />
+      </div>
     </div>
   );
 };
