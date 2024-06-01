@@ -2,10 +2,18 @@
 
 import Heading from "@/components/Heading";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Billboards } from "@/types-db";
 import { Plus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
+import { DataTable } from "./data-table";
+import { BillboardColumn, columns } from "./columns";
 
-const BillboardsClient = () => {
+interface BillboardsClientProps {
+  data: BillboardColumn[];
+}
+
+const BillboardsClient = ({ data }: BillboardsClientProps) => {
   const params = useParams();
   const router = useRouter();
   return (
@@ -22,6 +30,9 @@ const BillboardsClient = () => {
           Add New
         </Button>
       </div>
+      <Separator />
+
+      <DataTable searchKey="label" columns={columns} data={data} />
     </>
   );
 };

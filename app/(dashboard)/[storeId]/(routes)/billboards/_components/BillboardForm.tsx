@@ -1,7 +1,7 @@
 "use client";
 
 import Heading from "@/components/Heading";
-import ImageUploader from "@/components/image-upoader";
+import ImageUpload from "@/components/image-upload";
 import { AlertModal } from "@/components/modal/alert-modal";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,10 +15,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
+import { storage } from "@/lib/firebase";
 import { Billboards } from "@/types-db";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { Trash } from "lucide-react";
+import { deleteObject, ref } from "firebase/storage";
+import { ImageUp, Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -59,14 +61,22 @@ const BillboardForm = ({ initialData }: SettingsFormProps) => {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
       setIsLoading(true);
-      const response = await axios.patch(`/api/stores/${parmas.storeId}`, data);
+      if (initialData) {
+        await axios.patch(
+          `/api/${parmas.storeId}/billboards/${parmas.billboardId}`,
+          data
+        );
+      } else {
+        await axios.post(`/api/${parmas.storeId}/billboards`, data);
+      }
 
       toast({
-        title: "Store Created",
-        description: "Your store has been updated successfully",
+        title: "Billboard Created",
+        description: toastMesaage,
       });
 
       router.refresh();
+      router.push(`/${parmas.storeId}/billboards`);
     } catch (error) {
       toast({
         title: "Something went wrong!",
@@ -81,16 +91,22 @@ const BillboardForm = ({ initialData }: SettingsFormProps) => {
   const onDelete = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.delete(`/api/stores/${parmas.storeId}`);
-      toast({
-        title: "Store Deleted",
-        description: "Your store has been deleted successfully",
+      const { imageUrl } = form.getValues();
+      await deleteObject(ref(storage, imageUrl)).then(async () => {
+        await axios.delete(
+          `/api/${parmas.storeId}/billboards/${parmas.billboardId}`
+        );
       });
-      router.push("/");
+      toast({
+        title: "Billboard Deleted",
+        description: "Your billboard has been deleted successfully",
+      });
+      router.refresh();
+      router.push(`/${parmas.storeId}/billboards`);
     } catch (error) {
       toast({
         title: "Something went wrong!",
-        description: "An error occurred while deleting the store",
+        description: "An error occurred while deleting the billboard",
         variant: "destructive",
       });
     } finally {
@@ -128,11 +144,16 @@ const BillboardForm = ({ initialData }: SettingsFormProps) => {
           <FormField
             control={form.control}
             name="imageUrl"
-            render={(field) => (
+            render={({ field }) => (
               <FormItem>
                 <FormLabel>Billboard Image</FormLabel>
                 <FormControl>
-                  <ImageUploader />
+                  <ImageUpload
+                    disabled={isLoading}
+                    value={field.value ? [field.value] : []}
+                    onChange={(url) => field.onChange(url)}
+                    onRemove={() => field.onChange("")}
+                  />
                 </FormControl>
               </FormItem>
             )}
