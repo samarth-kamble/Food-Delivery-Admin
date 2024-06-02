@@ -7,25 +7,25 @@ import { Billboards } from "@/types-db";
 import { Plus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { DataTable } from "../../../../../../components/data-table";
-import { BillboardColumn, columns } from "./columns";
+import { CategoryColoumn, columns } from "./columns";
 import APIList from "@/components/api-list";
 
-interface BillboardsClientProps {
-  data: BillboardColumn[];
+interface CategoryClientProps {
+  data: CategoryColoumn[];
 }
 
-const BillboardsClient = ({ data }: BillboardsClientProps) => {
+const CategoryClient = ({ data }: CategoryClientProps) => {
   const params = useParams();
   const router = useRouter();
   return (
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title={`Billboards (${data.length})`}
-          description="Add your billboards or manage billboard for you storage"
+          title={`Categories (${data.length})`}
+          description="Add your categories or manage categories for you storage"
         />
         <Button
-          onClick={() => router.push(`/${params.storeId}/billboards/create`)}
+          onClick={() => router.push(`/${params.storeId}/categories/create`)}
         >
           <Plus className=" h-4 w-4 mr-2" />
           Add New
@@ -33,12 +33,13 @@ const BillboardsClient = ({ data }: BillboardsClientProps) => {
       </div>
       <Separator />
 
-      <DataTable searchKey="label" columns={columns} data={data} />
+      <DataTable searchKey="name" columns={columns} data={data} />
+
       <Heading title="API" description="API call for categories" />
       <Separator />
-      <APIList entityName="billboards" entittyNameId="billboardId" />
+      <APIList entityName="categories" entittyNameId="categoryId" />
     </>
   );
 };
 
-export default BillboardsClient;
+export default CategoryClient;
