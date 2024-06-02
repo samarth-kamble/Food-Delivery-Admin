@@ -114,13 +114,7 @@ export const DELETE = async (
 
     await deleteDoc(billboardRef);
 
-    const billboard = (
-      await getDoc(
-        doc(db, "stores", params.storeId, "billboards", params.billboardId)
-      )
-    ).data() as Billboards;
-
-    return NextResponse.json(billboard);
+    return NextResponse.json({ message: "Billboard deleted" });
   } catch (error) {
     console.error(`BILLBOARD_POST: ${error}`);
     return new NextResponse("Internal Server Error", { status: 500 });

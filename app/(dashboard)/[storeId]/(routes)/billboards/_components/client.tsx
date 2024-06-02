@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { Billboards } from "@/types-db";
 import { Plus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { DataTable } from "./data-table";
+import { DataTable } from "../../../../../../components/data-table";
 import { BillboardColumn, columns } from "./columns";
 
 interface BillboardsClientProps {
@@ -20,7 +20,7 @@ const BillboardsClient = ({ data }: BillboardsClientProps) => {
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title={`Billboards(0)`}
+          title={`Billboards (${data.length})`}
           description="Add your billboards or manage billboard for you storage"
         />
         <Button

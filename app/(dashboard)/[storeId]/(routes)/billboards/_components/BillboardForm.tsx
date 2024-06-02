@@ -66,14 +66,19 @@ const BillboardForm = ({ initialData }: SettingsFormProps) => {
           `/api/${parmas.storeId}/billboards/${parmas.billboardId}`,
           data
         );
+        router.refresh();
+        toast({
+          title: "Billboard Updated",
+          description: toastMesaage,
+        });
       } else {
         await axios.post(`/api/${parmas.storeId}/billboards`, data);
+        router.refresh();
+        toast({
+          title: "Billboard Created",
+          description: toastMesaage,
+        });
       }
-
-      toast({
-        title: "Billboard Created",
-        description: toastMesaage,
-      });
 
       router.refresh();
       router.push(`/${parmas.storeId}/billboards`);

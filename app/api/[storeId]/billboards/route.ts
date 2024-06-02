@@ -49,7 +49,7 @@ export const POST = async (
     const billboardData = {
       label,
       imageUrl,
-      craetedAt: serverTimestamp(),
+      createdAt: serverTimestamp(),
     };
 
     const billboardRef = await addDoc(
