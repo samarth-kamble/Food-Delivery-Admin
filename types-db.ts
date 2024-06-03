@@ -47,3 +47,19 @@ export interface Cuisine {
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
+
+export interface Product {
+  id: string;
+  name: string;
+  price: number;
+  qty: number;
+  images: { url: string }[];
+  isFeatured: boolean;
+  isArchieved: boolean;
+  category: string;
+  size: string;
+  kitchen: string;
+  cuisine: string;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}

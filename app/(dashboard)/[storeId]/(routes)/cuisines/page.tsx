@@ -5,6 +5,7 @@ import { Size } from "@/types-db";
 import { format } from "date-fns";
 import SizeClient from "./_components/client";
 import { CuisineColumn } from "./_components/columns";
+import CuisinesClient from "./_components/client";
 
 const CuisinePage = async ({ params }: { params: { storeId: string } }) => {
   const cuisinesData = (
@@ -23,7 +24,7 @@ const CuisinePage = async ({ params }: { params: { storeId: string } }) => {
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <SizeClient data={formattedSizes} />
+        <CuisinesClient data={formattedSizes} />
       </div>
     </div>
   );
