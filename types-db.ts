@@ -24,3 +24,11 @@ export interface Category {
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
+
+export interface Size {
+  id: string;
+  name: string;
+  value: string;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
