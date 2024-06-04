@@ -16,7 +16,9 @@ const ProductPage = async ({
 
   const categoriesData = (
     await getDocs(collection(doc(db, "stores", params.storeId), "categories"))
-  ).docs.map((doc) => doc.data()) as Category[];
+  ).docs
+    .map((doc) => doc.data())
+    .map((category) => category.name) as Category[];
 
   const sizesData = (
     await getDocs(collection(doc(db, "stores", params.storeId), "sizes"))
