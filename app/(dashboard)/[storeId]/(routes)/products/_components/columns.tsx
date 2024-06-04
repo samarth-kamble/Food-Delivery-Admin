@@ -5,7 +5,7 @@ import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CellAction from "./cell-action";
 
-export type ProductColumns = {
+export type ProductsColumn = {
   id: string;
   name: string;
   price: string;
@@ -19,7 +19,7 @@ export type ProductColumns = {
   createdAt: string;
 };
 
-export const columns: ColumnDef<ProductColumns>[] = [
+export const columns: ColumnDef<ProductsColumn>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => {
@@ -40,11 +40,11 @@ export const columns: ColumnDef<ProductColumns>[] = [
   },
   {
     accessorKey: "isFeatured",
-    header: "Featured",
+    header: "Fetured",
   },
   {
     accessorKey: "isArchieved",
-    header: "Archieved",
+    header: "Archieve",
   },
   {
     accessorKey: "category",
@@ -59,7 +59,7 @@ export const columns: ColumnDef<ProductColumns>[] = [
     header: "Kitchen",
   },
   {
-    accessorKey: "cuisines",
+    accessorKey: "cuisine",
     header: "Cuisine",
   },
   {

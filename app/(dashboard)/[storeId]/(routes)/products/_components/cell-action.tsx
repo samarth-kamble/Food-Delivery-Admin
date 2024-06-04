@@ -15,10 +15,10 @@ import { useToast } from "@/components/ui/use-toast";
 
 import axios from "axios";
 import { AlertModal } from "@/components/modal/alert-modal";
-import { CuisineColumn } from "./columns";
+import { SizeColumn } from "./columns";
 
 interface CellActionProps {
-  data: CuisineColumn;
+  data: SizeColumn;
 }
 
 const CellAction = ({ data }: CellActionProps) => {
@@ -40,17 +40,17 @@ const CellAction = ({ data }: CellActionProps) => {
   const onDelete = async () => {
     try {
       setIsLoading(true);
-      await axios.delete(`/api/${parmas.storeId}/cuisines/${data.id}`);
+      await axios.delete(`/api/${parmas.storeId}/sizes/${data.id}`);
       toast({
-        title: "Cuisines Deleted",
-        description: "Your Cuisines has been deleted successfully",
+        title: "Size Deleted",
+        description: "Your Size has been deleted successfully",
       });
       location.reload();
-      router.push(`/${parmas.storeId}/cuisines`);
+      router.push(`/${parmas.storeId}/sizes`);
     } catch (error) {
       toast({
         title: "Something went wrong!",
-        description: "An error occurred while deleting the Cuisines",
+        description: "An error occurred while deleting the Sizes",
         variant: "destructive",
       });
     } finally {
@@ -79,9 +79,7 @@ const CellAction = ({ data }: CellActionProps) => {
             Copy ID
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() =>
-              router.push(`/${parmas.storeId}/cuisines/${data.id}`)
-            }
+            onClick={() => router.push(`/${parmas.storeId}/sizes/${data.id}`)}
           >
             <Edit className="h-4 w-4 mr-2" />
             Update

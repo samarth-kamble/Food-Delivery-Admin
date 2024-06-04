@@ -259,11 +259,17 @@ const ProductsForm = ({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {categories.map((category) => (
-                          <SelectItem key={category.id} value={category.id}>
-                            {category.name}
+                        {categories?.map((field) => (
+                          <SelectItem key={field.id} value={field.id}>
+                            {field.name}
                           </SelectItem>
                         ))}
+
+                        {/* {categories.map((field) => (
+                          <SelectItem key={field.id} value={field.id}>
+                            {field.name}
+                          </SelectItem>
+                        ))} */}
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -293,7 +299,7 @@ const ProductsForm = ({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {sizes.map((size) => (
+                        {sizes?.map((size) => (
                           <SelectItem key={size.id} value={size.id}>
                             {size.name}
                           </SelectItem>
@@ -327,7 +333,7 @@ const ProductsForm = ({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {kitchens.map((kitchen) => (
+                        {kitchens?.map((kitchen) => (
                           <SelectItem key={kitchen.id} value={kitchen.id}>
                             {kitchen.name}
                           </SelectItem>
@@ -361,9 +367,9 @@ const ProductsForm = ({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {cuisines.map((cuisine) => (
-                          <SelectItem key={cuisine.id} value={cuisine.id}>
-                            {cuisine.name}
+                        {cuisines?.map((field) => (
+                          <SelectItem key={field.id} value={field.id}>
+                            {field.name}
                           </SelectItem>
                         ))}
                       </SelectContent>

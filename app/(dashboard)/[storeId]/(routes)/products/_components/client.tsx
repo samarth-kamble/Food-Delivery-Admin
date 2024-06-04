@@ -7,22 +7,22 @@ import { Billboards } from "@/types-db";
 import { Plus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { DataTable } from "../../../../../../components/data-table";
-import { ProductColumns, columns } from "./columns";
+import { ProductsColumn, columns } from "./columns";
 import APIList from "@/components/api-list";
 
-interface ProductsClientProps {
-  data: ProductColumns[];
+interface ProductColumnProps {
+  data: ProductsColumn[];
 }
 
-const ProductsClient = ({ data }: ProductsClientProps) => {
+const ProductsClient = ({ data }: ProductColumnProps) => {
   const params = useParams();
   const router = useRouter();
   return (
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title={`Product (${data.length})`}
-          description="Add your products or manage products for you storage"
+          title={`Products (${data.length})`}
+          description="Add your Products or manage products for you storage"
         />
         <Button
           onClick={() => router.push(`/${params.storeId}/products/create`)}
@@ -35,7 +35,7 @@ const ProductsClient = ({ data }: ProductsClientProps) => {
 
       <DataTable searchKey="name" columns={columns} data={data} />
 
-      <Heading title="API" description="API call for products" />
+      <Heading title="API" description="API call for sizes" />
       <Separator />
       <APIList entityName="products" entittyNameId="productId" />
     </>

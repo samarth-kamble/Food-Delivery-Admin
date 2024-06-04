@@ -52,7 +52,7 @@ export interface Product {
   id: string;
   name: string;
   price: number;
-  qty: number;
+  qty?: number;
   images: { url: string }[];
   isFeatured: boolean;
   isArchieved: boolean;

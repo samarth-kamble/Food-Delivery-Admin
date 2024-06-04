@@ -1,19 +1,18 @@
 import React from "react";
 import { collection, doc, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Product } from "@/types-db";
+import { Product, Size } from "@/types-db";
 import { format } from "date-fns";
-import SizeClient from "./_components/client";
-import { ProductColumns } from "./_components/columns";
+import { ProductsColumn } from "./_components/columns";
 import { formatter } from "@/lib/utils";
 import ProductsClient from "./_components/client";
 
-const ProductPage = async ({ params }: { params: { storeId: string } }) => {
+const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
   const productData = (
     await getDocs(collection(doc(db, "stores", params.storeId), "products"))
   ).docs.map((doc) => doc.data()) as Product[];
 
-  const formattedProducts: ProductColumns[] = productData.map((item) => ({
+  const formattedProduct: ProductsColumn[] = productData.map((item) => ({
     id: item.id,
     name: item.name,
     price: formatter.format(item.price),
@@ -32,10 +31,10 @@ const ProductPage = async ({ params }: { params: { storeId: string } }) => {
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <ProductsClient data={formattedProducts} />
+        <ProductsClient data={formattedProduct} />
       </div>
     </div>
   );
 };
 
-export default ProductPage;
+export default ProductsPage;

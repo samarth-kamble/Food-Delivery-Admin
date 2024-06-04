@@ -1,7 +1,7 @@
 import { db } from "@/lib/firebase";
 import { Category, Cuisine, Kitchen, Product, Size } from "@/types-db";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
-import ProductsForm from "../_components/product-form";
+import ProductsForm from "../_components/size-form";
 
 const ProductPage = async ({
   params,
