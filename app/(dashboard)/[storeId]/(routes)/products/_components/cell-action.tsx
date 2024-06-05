@@ -15,10 +15,10 @@ import { useToast } from "@/components/ui/use-toast";
 
 import axios from "axios";
 import { AlertModal } from "@/components/modal/alert-modal";
-import { SizeColumn } from "./columns";
+import { ProductsColumn } from "./columns";
 
 interface CellActionProps {
-  data: SizeColumn;
+  data: ProductsColumn;
 }
 
 const CellAction = ({ data }: CellActionProps) => {
@@ -40,13 +40,13 @@ const CellAction = ({ data }: CellActionProps) => {
   const onDelete = async () => {
     try {
       setIsLoading(true);
-      await axios.delete(`/api/${parmas.storeId}/sizes/${data.id}`);
+      await axios.delete(`/api/${parmas.storeId}/products/${data.id}`);
       toast({
         title: "Size Deleted",
         description: "Your Size has been deleted successfully",
       });
       location.reload();
-      router.push(`/${parmas.storeId}/sizes`);
+      router.push(`/${parmas.storeId}/products`);
     } catch (error) {
       toast({
         title: "Something went wrong!",
@@ -79,7 +79,9 @@ const CellAction = ({ data }: CellActionProps) => {
             Copy ID
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => router.push(`/${parmas.storeId}/sizes/${data.id}`)}
+            onClick={() =>
+              router.push(`/${parmas.storeId}/products/${data.id}`)
+            }
           >
             <Edit className="h-4 w-4 mr-2" />
             Update

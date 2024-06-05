@@ -116,7 +116,7 @@ export const DELETE = async (
       return new NextResponse("Store ID is required", { status: 400 });
     }
     if (!params.productId) {
-      return new NextResponse("Size ID is required", { status: 400 });
+      return new NextResponse("Product ID is required", { status: 400 });
     }
 
     const store = await getDoc(doc(db, "stores", params.storeId));
