@@ -75,7 +75,6 @@ const SizeForm = ({ initialData }: SizeFormProps) => {
           description: toastMesaage,
         });
       }
-
       router.refresh();
       router.push(`/${parmas.storeId}/sizes`);
     } catch (error) {
@@ -98,6 +97,7 @@ const SizeForm = ({ initialData }: SizeFormProps) => {
         description: "Your Size has been deleted successfully",
       });
       router.refresh();
+
       router.push(`/${parmas.storeId}/sizes`);
     } catch (error) {
       toast({

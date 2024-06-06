@@ -66,6 +66,7 @@ const BillboardForm = ({ initialData }: SettingsFormProps) => {
           `/api/${parmas.storeId}/billboards/${parmas.billboardId}`,
           data
         );
+        location.reload();
         router.refresh();
         toast({
           title: "Billboard Updated",

@@ -71,7 +71,7 @@ const CuisinesForm = ({ initialData }: CuisinesFormProps) => {
         });
       } else {
         await axios.post(`/api/${parmas.storeId}/cuisines`, data);
-        router.refresh();
+
         toast({
           title: "Cuisines Created",
           description: toastMesaage,
@@ -95,6 +95,7 @@ const CuisinesForm = ({ initialData }: CuisinesFormProps) => {
     try {
       setIsLoading(true);
       await axios.delete(`/api/${parmas.storeId}/cuisines/${parmas.cuisineId}`);
+      router.refresh();
       toast({
         title: "Cuisines Deleted",
         description: "Your Cuisines has been deleted successfully",

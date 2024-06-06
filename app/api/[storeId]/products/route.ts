@@ -9,6 +9,9 @@ import {
   getDocs,
   serverTimestamp,
   updateDoc,
+  where,
+  query,
+  and,
 } from "firebase/firestore";
 import { NextResponse } from "next/server";
 
@@ -106,11 +109,65 @@ export const GET = async (
       return new NextResponse("Store ID is required", { status: 400 });
     }
 
-    const sizeData = (
-      await getDocs(collection(doc(db, "stores", params.storeId), "products"))
-    ).docs.map((doc) => doc.data()) as Product[];
+    //  get the search params request.url
 
-    return NextResponse.json(sizeData);
+    const { searchParams } = new URL(req.url);
+    const productRef = collection(
+      doc(db, "stores", params.storeId),
+      "products"
+    );
+
+    let productQuery;
+
+    let queryContraint = [];
+
+    if (searchParams.has("size")) {
+      queryContraint.push(where("size", "==", searchParams.get("size")));
+    }
+    if (searchParams.has("category")) {
+      queryContraint.push(
+        where("category", "==", searchParams.get("category"))
+      );
+    }
+    if (searchParams.has("kitchen")) {
+      queryContraint.push(where("kitchen", "==", searchParams.get("kitchen")));
+    }
+    if (searchParams.has("cuisine")) {
+      queryContraint.push(where("cuisine", "==", searchParams.get("cuisine")));
+    }
+    if (searchParams.has("isFetured")) {
+      queryContraint.push(
+        where(
+          "isFetured",
+          "==",
+          searchParams.get("isFetured") === "true" ? true : false
+        )
+      );
+    }
+    if (searchParams.has("isArchived")) {
+      queryContraint.push(
+        where(
+          "isArchived",
+          "==",
+          searchParams.get("isArchived") === "true" ? true : false
+        )
+      );
+    }
+
+    if (queryContraint.length > 0) {
+      productQuery = query(productRef, and(...queryContraint));
+    } else {
+      productQuery = query(productRef);
+    }
+
+    // excute the query
+
+    const querySnapshot = await getDocs(productQuery);
+    const productData: Product[] = querySnapshot.docs.map(
+      (doc) => doc.data() as Product
+    );
+
+    return NextResponse.json(productData);
   } catch (error) {
     console.error(`PRODUCTS_GET: ${error}`);
     return new NextResponse("Internal Server Error", { status: 500 });

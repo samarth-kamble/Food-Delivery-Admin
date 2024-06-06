@@ -92,7 +92,7 @@ const CategoryIdForm = ({ initialData, billboards }: SettingsFormProps) => {
           ...data,
           billboardLabel: matchingBillboard?.label,
         });
-        router.refresh();
+
         toast({
           title: "Category Created",
           description: toastMesaage,
@@ -118,6 +118,7 @@ const CategoryIdForm = ({ initialData, billboards }: SettingsFormProps) => {
       await axios.delete(
         `/api/${parmas.storeId}/categories/${parmas.categoryId}`
       );
+
       toast({
         title: "Category Deleted",
         description: "Your Category has been deleted successfully",

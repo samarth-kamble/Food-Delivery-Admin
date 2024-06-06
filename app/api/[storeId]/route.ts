@@ -28,7 +28,6 @@ export const PATCH = async (
       return new NextResponse("Store ID is required", { status: 400 });
     }
 
-    // Create a new store with the user's ID
     const { name } = body;
 
     if (!name) {
@@ -39,14 +38,20 @@ export const PATCH = async (
 
     await updateDoc(docRef, { name });
 
-    const store = (await getDoc(docRef)).data() as Store;
+    const storeDoc = await getDoc(docRef);
+    if (!storeDoc.exists()) {
+      return new NextResponse("Store not found", { status: 404 });
+    }
+
+    const store = storeDoc.data() as Store;
 
     return NextResponse.json(store);
   } catch (error) {
-    console.error(`STORES_PATCH: ${error}`);
+    console.error(`STORES_PATCH:    `, error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 };
+
 export const DELETE = async (
   req: Request,
   { params }: { params: { storeId: string } }
@@ -62,114 +67,52 @@ export const DELETE = async (
       return new NextResponse("Store ID is missing", { status: 400 });
     }
 
-    // TODO: Delete all the sub collection and along with those data file
+    const storeId = params.storeId;
 
-    // billboards delete
-    const billboardsQuerySnapshot = await getDocs(
-      collection(db, `stores/${params.storeId}/billboards`)
-    );
-
-    billboardsQuerySnapshot.forEach(async (doc) => {
-      await deleteDoc(doc.ref);
-
-      // delete the image from storage
-      const imageUrl = doc.data().imageUrl;
-      if (imageUrl) {
-        const imageRef = ref(storage, imageUrl);
-        await deleteObject(imageRef);
-      }
-    });
-
-    // categories delete
-    const categoriesQuerySnapshot = await getDocs(
-      collection(db, `stores/${params.storeId}/categories`)
-    );
-
-    categoriesQuerySnapshot.forEach(async (doc) => {
-      await deleteDoc(doc.ref);
-    });
-
-    // sizes delete
-    const sizesQuerySnapshot = await getDocs(
-      collection(db, `stores/${params.storeId}/sizes`)
-    );
-
-    sizesQuerySnapshot.forEach(async (doc) => {
-      await deleteDoc(doc.ref);
-    });
-
-    // kitchens delete
-    const kitchensQuerySnapshot = await getDocs(
-      collection(db, `stores/${params.storeId}/kitchens`)
-    );
-
-    kitchensQuerySnapshot.forEach(async (doc) => {
-      await deleteDoc(doc.ref);
-    });
-
-    // cuisine delete
-    const cuisineQuerySnapshot = await getDocs(
-      collection(db, `stores/${params.storeId}/cuisine`)
-    );
-
-    cuisineQuerySnapshot.forEach(async (doc) => {
-      await deleteDoc(doc.ref);
-    });
-
-    // products delete
-    const productsQuerySnapshot = await getDocs(
-      collection(db, `stores/${params.storeId}/products`)
-    );
-
-    productsQuerySnapshot.forEach(async (doc) => {
-      await deleteDoc(doc.ref);
-
-      // delete the image array from storage
-      const imageArray = doc.data().images;
-      if (imageArray && Array.isArray(imageArray)) {
-        await Promise.all(
-          imageArray.map(async (image) => {
-            const imageRef = ref(storage, image.url);
+    const deleteSubCollection = async (subCollectionName: string) => {
+      const querySnapshot = await getDocs(
+        collection(db, `stores/${storeId}/${subCollectionName}`)
+      );
+      const deletePromises = querySnapshot.docs.map(async (doc) => {
+        if (
+          subCollectionName === "billboards" ||
+          subCollectionName === "products" ||
+          subCollectionName === "orders"
+        ) {
+          const imageArray = doc.data().images || doc.data().imageUrl;
+          if (Array.isArray(imageArray)) {
+            await Promise.all(
+              imageArray.map(async (image: { url: string }) => {
+                const imageRef = ref(storage, image.url);
+                await deleteObject(imageRef);
+              })
+            );
+          } else if (imageArray) {
+            const imageRef = ref(storage, imageArray);
             await deleteObject(imageRef);
-          })
-        );
-      }
-    });
+          }
+        }
+        await deleteDoc(doc.ref);
+      });
+      await Promise.all(deletePromises);
+    };
 
-    // orders delete
-    const ordersQuerySnapshot = await getDocs(
-      collection(db, `stores/${params.storeId}/orders`)
-    );
+    await Promise.all([
+      deleteSubCollection("billboards"),
+      deleteSubCollection("categories"),
+      deleteSubCollection("sizes"),
+      deleteSubCollection("kitchens"),
+      deleteSubCollection("cuisines"),
+      deleteSubCollection("products"),
+      deleteSubCollection("orders"),
+    ]);
 
-    ordersQuerySnapshot.forEach(async (doc) => {
-      await deleteDoc(doc.ref);
-
-      // delete the image array from storage
-      const imageArray = doc.data().images;
-      if (imageArray && Array.isArray(imageArray)) {
-        await Promise.all(
-          imageArray.map(async (orderItem) => {
-            const itemImageArray = orderItem.images;
-            if (itemImageArray && Array.isArray(itemImageArray)) {
-              await Promise.all(
-                itemImageArray.map(async (image) => {
-                  const imageRef = ref(storage, image.url);
-                  await deleteObject(imageRef);
-                })
-              );
-            }
-          })
-        );
-      }
-    });
-
-    const docRef = doc(db, "stores", params.storeId);
-
+    const docRef = doc(db, "stores", storeId);
     await deleteDoc(docRef);
 
     return NextResponse.json({ message: "Store deleted successfully" });
   } catch (error) {
-    console.error(`STORES_DELETE: ${error}`);
+    console.error(error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 };

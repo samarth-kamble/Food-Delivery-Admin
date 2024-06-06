@@ -115,7 +115,6 @@ const ProductsForm = ({
         });
       }
 
-      router.refresh();
       router.push(`/${parmas.storeId}/products`);
     } catch (error) {
       toast({

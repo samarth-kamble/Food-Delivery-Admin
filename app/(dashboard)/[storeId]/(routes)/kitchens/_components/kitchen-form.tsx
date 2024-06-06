@@ -64,7 +64,7 @@ const KithchenForm = ({ initialData }: KithchenFormProps) => {
           `/api/${parmas.storeId}/kitchens/${parmas.kithcenId}`,
           data
         );
-        location.reload();
+        router.refresh();
         toast({
           title: "Kithchen Updated",
           description: toastMesaage,
@@ -77,8 +77,7 @@ const KithchenForm = ({ initialData }: KithchenFormProps) => {
           description: toastMesaage,
         });
       }
-
-      location.reload();
+      router.refresh();
       router.push(`/${parmas.storeId}/kitchens`);
     } catch (error) {
       toast({

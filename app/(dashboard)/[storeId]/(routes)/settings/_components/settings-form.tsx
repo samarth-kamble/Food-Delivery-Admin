@@ -46,19 +46,19 @@ const SettingsForm = ({ initialData }: SettingsFormProps) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const parmas = useParams();
+  const params = useParams();
   const origin = useOrigin();
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
       setIsLoading(true);
-      const response = await axios.patch(`/api/stores/${parmas.storeId}`, data);
+      const response = await axios.patch(`/api/${params.storeId}`, data);
 
       toast({
         title: "Store Created",
         description: "Your store has been updated successfully",
       });
-
+      location.reload();
       router.refresh();
     } catch (error) {
       toast({
@@ -74,12 +74,13 @@ const SettingsForm = ({ initialData }: SettingsFormProps) => {
   const onDelete = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.delete(`/api/stores/${parmas.storeId}`);
+      const response = await axios.delete(`/api/${params.storeId}`);
+      router.push("/");
+      location.reload();
       toast({
         title: "Store Deleted",
         description: "Your store has been deleted successfully",
       });
-      router.push("/");
     } catch (error) {
       toast({
         title: "Something went wrong!",
@@ -143,7 +144,7 @@ const SettingsForm = ({ initialData }: SettingsFormProps) => {
 
       <ApiAlert
         title="NEXT_PUBLIC_API_URL"
-        description={`${origin}/api/${parmas.storeId}`}
+        description={`${origin}/api/${params.storeId}`}
         variant={"public"}
       />
     </>
