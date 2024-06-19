@@ -20,7 +20,7 @@ export const PATCH = async (
     const body = await req.json();
 
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 400 });
+      return new NextResponse("Unauthorized", { status: 401 });
     }
 
     const {
@@ -55,47 +55,42 @@ export const PATCH = async (
       return new NextResponse("Store ID is required", { status: 400 });
     }
 
-    const store = await getDoc(doc(db, "stores", params.storeId));
+    const storeRef = doc(db, "stores", params.storeId);
+    const store = await getDoc(storeRef);
 
-    if (store.exists()) {
-      let storeData = store.data();
-      if (storeData?.userId !== userId) {
-        return new NextResponse("Unauthorized", { status: 500 });
-      }
+    if (!store.exists()) {
+      return new NextResponse("Store not found", { status: 404 });
     }
 
-    const productRef = await getDoc(
-      doc(db, "stores", params.storeId, "products", params.productId)
-    );
+    const storeData = store.data();
+    if (storeData?.userId !== userId) {
+      return new NextResponse("Unauthorized", { status: 403 });
+    }
 
-    if (productRef.exists()) {
-      await updateDoc(
-        doc(db, "stores", params.storeId, "products", params.productId),
-        {
-          ...productRef.data(),
-          name,
-          price,
-          images,
-          isFeatured,
-          isArchieved,
-          category,
-          size,
-          kitchen,
-          cuisine,
-          updatedAt: serverTimestamp(),
-        }
-      );
-    } else {
+    const productRef = doc(db, "stores", params.storeId, "products", params.productId);
+    const productDoc = await getDoc(productRef);
+
+    if (!productDoc.exists()) {
       return new NextResponse("Product not found", { status: 404 });
     }
 
-    const product = (
-      await getDoc(
-        doc(db, "stores", params.storeId, "products", params.productId)
-      )
-    ).data() as Product;
+    await updateDoc(productRef, {
+      name,
+      price,
+      images,
+      isFeatured,
+      isArchieved,
+      category,
+      size,
+      kitchen,
+      cuisine,
+      updatedAt: serverTimestamp(),
+    });
 
-    return NextResponse.json(product);
+    const updatedProductDoc = await getDoc(productRef);
+    const updatedProduct = updatedProductDoc.data() as Product;
+
+    return NextResponse.json(updatedProduct);
   } catch (error) {
     console.error(`PRODUCTS_PATCH: ${error}`);
     return new NextResponse("Internal Server Error", { status: 500 });
@@ -180,6 +175,9 @@ export const GET = async (
         doc(db, "stores", params.storeId, "products", params.productId)
       )
     ).data() as Product;
+
+    return NextResponse.json(product);
+
   } catch (error) {
     console.error(`PRODUCTS_PATCH: ${error}`);
     return new NextResponse("Internal Server Error", { status: 500 });
